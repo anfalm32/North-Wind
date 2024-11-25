@@ -1,69 +1,207 @@
 # North-Wind
-# 🌟 Northwind Data Analysis Project  
 
-**📊 Comprehensive Business Insights**  
+# 🌟 **Northwind Data Analysis Project**
 
-> This project aims to analyze the **Northwind dataset** using **SQL**, **Power Query**, and **Power BI** to extract actionable insights and support data-driven decision-making.  
-
----
-
-## 🚀 Project Objectives  
-- **Analyze business performance**: Focus on sales trends, customer behavior, and employee productivity.  
-- **Optimize operational efficiency**: Evaluate shipping performance and associated costs.  
-- **Deliver actionable recommendations**: Enhance overall business processes.  
-
----
-
-## 🛠 Tools Used  
-- **SQL**: For querying and analyzing data.  
-- **Power Query**: For cleaning and preprocessing data.  
-- **Power BI**: For creating dynamic and interactive dashboards.  
-
----
-
-## 📋 Dataset Overview  
-The analysis uses the **Northwind Dataset**, which includes several interconnected tables:  
-- **Orders**: Details about sales transactions.  
-- **Customers**: Information about clients.  
-- **Products**: Data about sold items.  
-- **Employees**: Employee details.  
-- **Shippers**: Shipping company information.  
-
-💡 *Data relationships were utilized to extract multi-dimensional insights.*  
+### 📜 **Table of Contents**
+1. 📖 [Introduction](#1-introduction)  
+2. 🗂️ [Northwind Dataset Overview](#2-northwind-dataset-overview)  
+3. 🛠️ [Data Exploration & Transformation with SQL](#3-data-exploration--transformation-with-sql)  
+    - Query 1: Product Revenue Analysis  
+    - Query 2: Customer Spending Analysis  
+    - Query 3: Employee Performance Analysis  
+    - Query 4: Shipping Performance Analysis  
+    - Query 5: Order Delivery Status Analysis  
+4. 🧹 [Data Cleaning](#4-data-cleaning)  
+5. 📊 [Data Modeling](#5-data-modeling)  
+6. 🔍 [Data Analysis & Insights](#6-data-analysis--insights)  
+7. 📈 [Dashboard Overview](#7-dashboard-overview)  
+8. 🚧 [Challenges Faced](#8-challenges-faced)  
+9. 🔮 [Future Work](#9-future-work)  
+10. 🎯 [Recommendations](#10-recommendations)  
+11. ✅ [Conclusion](#11-conclusion)  
 
 ---
 
-## 🔑 Key Analyses  
-### 🛒 Product Revenue Analysis  
-- Ranking products based on revenue to identify top-performing items.  
-- **Benefit**: Improve marketing strategies and inventory management.  
+## 1. 📖 **Introduction**  
+This project aims to extract valuable insights from the **Northwind dataset**, focusing on analyzing sales performance, customer trends, employee productivity, and shipping efficiency.  
 
-### 🧑‍💼 Employee Performance Analysis  
-- Assessing productivity by analyzing orders and sales handled by employees.  
-- **Benefit**: Recognize top performers and provide training for others.  
+### **Tools Used:**  
+- **SQL**: For querying and analyzing data from multiple tables.  
+- **Power Query**: For preprocessing and cleaning the data.  
+- **Power BI**: For creating interactive dashboards and visualizations.  
 
-### 📈 Sales Trends Over Time  
-- Tracking monthly and yearly sales patterns.  
-- **Benefit**: Enhance forecasting and seasonal planning.  
-
-### 🚚 Shipping Performance Analysis  
-- Comparing shipping times and costs by carrier and country.  
-- **Benefit**: Optimize logistics and improve customer satisfaction.  
+### **Key Objectives:**  
+- Identify top-performing products and customers.  
+- Analyze employee contributions and shipping efficiency.  
+- Provide actionable recommendations to optimize business processes.  
 
 ---
 
-## 📊 Dashboards  
-The Power BI dashboards include:  
-- **Key Metrics**: Total revenue, average order size, total customers, etc.  
-- **Interactive Visuals**: Product sales, shipping trends, and employee performance.  
-- **Filters**: Analyze data by time, product, or location.  
+## 2. 🗂️ **Northwind Dataset Overview**  
+The Northwind dataset represents a fictional business's operations, including sales, shipping, and employee management.  
+- **Orders**: Contains details of all transactions.  
+- **Customers**: Lists customer information.  
+- **Products**: Includes product details such as name and price.  
+- **Employees**: Stores information about employees managing orders.  
+- **Shippers**: Provides data on shipping companies.  
+
+💡 *The dataset’s structured relationships allow for multi-dimensional analysis.*  
 
 ---
 
-## 🎯 Recommendations  
-1. **Optimize Inventory**: Focus on high-demand, high-profit products.  
-2. **Target Customers**: Design personalized campaigns for high-value clients.  
-3. **Enhance Shipping**: Collaborate with efficient carriers to reduce delays.  
-4. **Boost Productivity**: Offer incentives to top-performing employees.  
+## 3. 🛠️ **Data Exploration & Transformation with SQL**  
+SQL queries were used to extract and transform data from the Northwind database, focusing on key business metrics:  
 
-💡 *This project combines data analytics with actionable insights to optimize business performance.*  
+### **Query 1: Product Revenue Analysis**  
+**Purpose**: Calculate total revenue generated by each product and rank products by revenue. 
+```sql
+SELECT 
+    p.ProductName,
+    SUM(od.Quantity * od.UnitPrice) AS TotalRevenue
+FROM 
+    Products p
+JOIN 
+    [Order Details] od ON p.ProductID = od.ProductID
+GROUP BY 
+    p.ProductName
+ORDER BY 
+    TotalRevenue DESC;
+- **Insight**: Highlights top-performing products to focus marketing efforts.  
+
+### **Query 2: Customer Spending Analysis**  
+**Purpose**: Summarize total spending per customer and rank them by contribution.
+```sql
+SELECT 
+    c.CustomerID,
+    c.CompanyName,
+    SUM(od.Quantity * od.UnitPrice) AS TotalSpent
+FROM 
+    Customers c
+JOIN 
+    Orders o ON c.CustomerID = o.CustomerID
+JOIN 
+    [Order Details] od ON o.OrderID = od
+
+- **Insight**: Identifies high-value customers for targeted marketing campaigns.  
+
+### **Query 3: Employee Performance Analysis**  
+**Purpose**: Analyze the number of orders handled and total sales per employee.
+```sql
+SELECT 
+    e.EmployeeID,
+    e.FirstName + ' ' + e.LastName AS EmployeeName,
+    COUNT(o.OrderID) AS TotalOrders
+FROM 
+    Employees e
+JOIN 
+    Orders o ON e.EmployeeID = o.EmployeeID
+GROUP BY 
+    e.EmployeeID, e.FirstName, e.LastName
+ORDER BY 
+    TotalOrders DESC;
+
+- **Insight**: Recognizes top-performing employees and allocates resources effectively.  
+
+### **Query 4: Shipping Performance Analysis**  
+**Purpose**: Calculate shipping costs and average shipping times by country and carrier.
+```sql
+SELECT 
+    s.ShipperName,
+    c.Country,
+    AVG(o.Freight) AS AvgFreight,
+    DATEDIFF(DAY, o.OrderDate, o.ShippedDate) AS AvgShippingTime
+FROM 
+    Shippers s
+JOIN 
+    Orders o ON s.ShipperID = o.ShipVia
+JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+WHERE 
+    o.ShippedDate IS NOT NULL
+GROUP BY 
+    s.ShipperName, c.Country
+ORDER BY 
+    AvgShippingTime;
+
+- **Insight**: Improves shipping efficiency and cost management.  
+
+### **Query 5: Order Delivery Status Analysis**  
+**Purpose**: Categorize orders as “On Time,” “Late,” or “Cancelled.”
+```sql
+SELECT 
+    o.OrderID,
+    CASE 
+        WHEN o.ShippedDate IS NULL THEN 'Cancelled'
+        WHEN o.ShippedDate > o.RequiredDate THEN 'Late'
+        ELSE 'On Time'
+    END AS DeliveryStatus
+FROM 
+    Orders o;
+
+- **Insight**: Evaluates logistics and delivery performance.  
+
+---
+
+## 4. 🧹 **Data Cleaning**  
+Data was cleaned using Power Query and SQL:  
+- Removed irrelevant columns (e.g., fax numbers and postal codes).  
+- Handled null values for missing yet meaningful data.  
+- Streamlined datasets for performance optimization in Power BI.  
+
+---
+
+## 5. 📊 **Data Modeling**  
+Relationships between tables were established in Power BI:  
+- Primary keys and foreign keys were mapped for data integrity.  
+- Adjustments were made for compatibility issues during modeling.  
+
+---
+
+## 6. 🔍 **Data Analysis & Insights**  
+Key findings include:  
+- **Top Revenue-Generating Products**: Focus on high-performing products.  
+- **High-Value Customers**: Target personalized campaigns.  
+- **Employee Productivity**: Align workload with performance metrics.  
+- **Shipping Costs**: Identify and prioritize cost-effective shippers.  
+
+---
+
+## 7. 📈 **Dashboard Overview**  
+The Power BI dashboard provides a comprehensive view of key business metrics, including:  
+- **Revenue by Product**: Visualizes top products by sales.  
+- **Customer Trends**: Identifies high-value customer segments.  
+- **Employee Contributions**: Tracks orders handled and sales achieved.  
+- **Shipping Efficiency**: Compares average costs and times by carrier.  
+
+Interactive filters allow users to explore data by:  
+- Time periods (Year/Quarter/Month).  
+- Products and Categories.  
+- Countries and Cities.  
+
+---
+
+## 8. 🚧 **Challenges Faced**  
+- Complex relationships between tables required careful modeling.  
+- Cleaning large datasets for performance optimization.  
+- Adjusting Power BI visuals for clarity and simplicity.  
+
+---
+
+## 9. 🔮 **Future Work**  
+- Explore predictive models to forecast sales trends.  
+- Integrate additional datasets to expand analysis (e.g., supplier data).  
+- Automate data cleaning processes for efficiency.  
+
+---
+
+## 10. 🎯 **Recommendations**  
+- **Inventory Management**: Focus on high-demand, high-revenue products.  
+- **Customer Retention**: Implement loyalty programs for top spenders.  
+- **Employee Incentives**: Reward top-performing employees.  
+- **Shipping Optimization**: Collaborate with efficient carriers to reduce costs.  
+
+---
+
+## 11. ✅ **Conclusion**  
+This project successfully analyzed the Northwind dataset to provide actionable insights that improve operational efficiency and business strategy. Future enhancements will focus on expanding the scope and automating processes for greater impact.  
+

@@ -66,6 +66,7 @@ GROUP BY
     p.ProductName
 ORDER BY 
     TotalRevenue DESC;
+```
 - **Insight**: Highlights top-performing products to focus marketing efforts.  
 
 ### **Query 2: Customer Spending Analysis**  
@@ -81,7 +82,7 @@ JOIN
     Orders o ON c.CustomerID = o.CustomerID
 JOIN 
     [Order Details] od ON o.OrderID = od
-
+```
 - **Insight**: Identifies high-value customers for targeted marketing campaigns.  
 
 ### **Query 3: Employee Performance Analysis**  
@@ -99,7 +100,7 @@ GROUP BY
     e.EmployeeID, e.FirstName, e.LastName
 ORDER BY 
     TotalOrders DESC;
-
+```
 - **Insight**: Recognizes top-performing employees and allocates resources effectively.  
 
 ### **Query 4: Shipping Performance Analysis**  
@@ -122,7 +123,7 @@ GROUP BY
     s.ShipperName, c.Country
 ORDER BY 
     AvgShippingTime;
-
+```
 - **Insight**: Improves shipping efficiency and cost management.  
 
 ### **Query 5: Order Delivery Status Analysis**  
@@ -137,7 +138,7 @@ SELECT
     END AS DeliveryStatus
 FROM 
     Orders o;
-
+```
 - **Insight**: Evaluates logistics and delivery performance.  
 
 ---
